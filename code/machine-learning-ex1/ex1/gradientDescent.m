@@ -2,6 +2,7 @@ function [theta, J_history] = gradientDescent(X, y, theta, alpha, num_iters)
 %GRADIENTDESCENT Performs gradient descent to learn theta
 %   theta = GRADIENTDESCENT(X, y, theta, alpha, num_iters) updates theta by 
 %   taking num_iters gradient steps with learning rate alpha
+% 梯度下降需要做的事就是循环实现参数的更新，重点在于复现更新的式子
 
 % Initialize some useful values
 m = length(y); % number of training examples
@@ -18,15 +19,19 @@ for iter = 1:num_iters
     %
 
 
-    x=X(:,2);
-    theta0=theta(1);
-    theta1=theta(2);
-    
-    theta0=theta0-alpha/m*sum(X*theta-y);
-    theta1=theta1-alpha/m*sum((X*theta-y).*x);
-    
-    theta=[theta0;theta1];
+%     x = X(:, 2);               % 2th column
+%     theta0 = theta(1); 
+%     theta1 = theta(2);
+%     
+%     theta0 = theta0-alpha/m*sum(X*theta-y);
+%     theta1 = theta1-alpha/m*sum((X*theta-y).*x);
+%     
+%     theta = [theta0; theta1];
 
+    % other method 1
+%     theta = theta - alpha / m * (sum((X * theta - y) .* X))';
+    % other method 2
+    theta = theta - alpha / m * X' * (X * theta - y);
 
     % ============================================================
 

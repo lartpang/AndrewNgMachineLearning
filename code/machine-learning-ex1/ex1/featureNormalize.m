@@ -7,8 +7,8 @@ function [X_norm, mu, sigma] = featureNormalize(X)
 
 % You need to set these values correctly
 X_norm = X;
-mu = zeros(1, size(X, 2));
-sigma = zeros(1, size(X, 2));
+mu = zeros(1, size(X, 2)); % 均值
+sigma = zeros(1, size(X, 2)); % 方差
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: First, for each feature dimension, compute the mean
@@ -26,15 +26,13 @@ sigma = zeros(1, size(X, 2));
 % Hint: You might find the 'mean' and 'std' functions useful.
 %       
 
+% mean()、std() 对矩阵各列向量计算
+mu = mean(X); 
+sigma = std(X);
 
-mu=mean(X)
-sigma=std(X)
-
-for i = 1:size(X,2),
-    X_norm(:,i) = (X(:,i) - mu(i)) / sigma(i);
+for i = 1 : size(X, 2)  % size(matrix, dim) = size(matrix)(dim)
+    X_norm(:, i) = (X(:, i) - mu(i)) / sigma(i);
 end
-
-
 
 % ============================================================
 

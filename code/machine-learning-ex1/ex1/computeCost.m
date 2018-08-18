@@ -13,9 +13,8 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 
-J=sum((X*theta-y).^2)/(2*m);
-
-
+% X 的行向量为x.T，这里直接将列向量加和
+J=1/(2*m) * sum((X*theta-y).^2);
 
 % =========================================================================
 

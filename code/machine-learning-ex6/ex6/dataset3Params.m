@@ -27,12 +27,15 @@ params = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
 
 min_error = 0;
 
-for c=params
-    for s=params
-        model = svmTrain(X, y, c, @(x1, x2) gaussianKernel(x1, x2, s)); % æ¨¡ä»¿ex6çš„è°ƒç”¨æ–¹å¼
-        predictions = svmPredict(model, Xval); % æŸ¥çœ‹svmPredict
+for c = params
+    for s= params
+        model = svmTrain(X, y, c, @(x1, x2) gaussianKernel(x1, x2, s));
+        % Ê¹ÓÃÑµÁ·µÃµ½µÄÄ£ĞÍmodelÀ´Ô¤²â½»²æÑéÖ¤¼¯Êı¾İ
+        predictions = svmPredict(model, Xval);
+        % ÇóÈ¡Îó²î¾ùÖµ
         error = mean(double(predictions ~= yval));
         
+        % Îó²îĞ¡Ê±£¬¾Í½øĞĞµü´ú¸üĞÂCºÍsigma
         if min_error == 0 || error < min_error
             min_error = error;
             C = c;

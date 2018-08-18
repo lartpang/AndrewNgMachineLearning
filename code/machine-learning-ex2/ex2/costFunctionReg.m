@@ -9,7 +9,8 @@ m = length(y); % number of training examples
 
 % You need to return the following variables correctly 
 J = 0;
-grad = zeros(size(theta));
+grad = zeros(size(theta)); 
+% 这里使用theta的size来进行设定初始化矩阵，而非强行指定为 mx1 的矩阵，这样导致的好处就是更具有兼容性
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost of a particular choice of theta.
@@ -17,11 +18,15 @@ grad = zeros(size(theta));
 %               Compute the partial derivatives and set grad to the partial
 %               derivatives of the cost w.r.t. each parameter in theta
 
-J = 1 / m * (- y' * log(sigmoid(X * theta)) - (1.- y)' * log(1.- sigmoid(X * theta))) + lambda / (2 * m) * theta(2:end,end)' * theta(2:end,end);
+% J = 1 / m * (- y' * log(sigmoid(X * theta)) - (1.- y)' * log(1.- sigmoid(X * theta))) + lambda / (2 * m) * theta(2:end,end)' * theta(2:end,end);
+% 
+% grad(1,1) = 1 / m * (X(:,1)' * (sigmoid(X * theta) - y))
+% grad(2:end,1) = (1 / m * (X(:,2:end)' * (sigmoid(X * theta) - y)) + lambda / m * theta(2:end));
 
-grad(1,1) = 1 / m * (X(:,1)' * (sigmoid(X * theta) - y))
-grad(2:end,1) = (1 / m * (X(:,2:end)' * (sigmoid(X * theta) - y)) + lambda / m * theta(2:end));
+J = 1 / m * (- y' * log(sigmoid(X * theta)) - (1 - y)' * log(1 - sigmoid(X * theta))) + lambda / (2 * m) * theta(2 : end)' * theta(2 : end);
 
+grad(1) = 1 / m * (X(:, 1)' * (sigmoid(X * theta) - y));
+grad(2 : end) = (1 / m * (X(:, 2 : end)' * (sigmoid(X * theta) - y)) + lambda / m * theta(2 : end));
 
 % =============================================================
 

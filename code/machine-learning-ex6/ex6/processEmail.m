@@ -4,7 +4,7 @@ function word_indices = processEmail(email_contents)
 %   word_indices = PROCESSEMAIL(email_contents) preprocesses 
 %   the body of an email and returns a list of indices of the 
 %   words contained in the email. 
-%
+%   word_indices 为处理后的邮件中的单词在单词列表文件中的索引
 
 % Load Vocabulary
 vocabList = getVocabList();
@@ -27,24 +27,27 @@ email_contents = lower(email_contents);
 % Strip all HTML
 % Looks for any expression that starts with < and ends with > and replace
 % and does not have any < or > in the tag it with a space
+% 匹配左右为 < > 但是，中间一次也不存在 < > 的任意字符，置换为空格
 email_contents = regexprep(email_contents, '<[^<>]+>', ' ');
 
 % Handle Numbers
 % Look for one or more characters between 0-9
+% 匹配至少一次数字字符，置换为 number
 email_contents = regexprep(email_contents, '[0-9]+', 'number');
 
 % Handle URLS
 % Look for strings starting with http:// or https://
-email_contents = regexprep(email_contents, ...
-                           '(http|https)://[^\s]*', 'httpaddr');
+% 匹配任意次 http://或者http:// 后接任意非空白字符，进行替换
+email_contents = regexprep(email_contents, '(http|https)://[^\s]*', 'httpaddr');
 
 % Handle Email Addresses
 % Look for strings with @ in the middle
+% 匹配至少一个非空白字符，并后接 @ ，再接至少一个非空白字符，进行替换
 email_contents = regexprep(email_contents, '[^\s]+@[^\s]+', 'emailaddr');
 
 % Handle $ sign
+% 匹配至少一个 $ 置换为 dollar
 email_contents = regexprep(email_contents, '[$]+', 'dollar');
-
 
 % ========================== Tokenize Email ===========================
 
@@ -58,17 +61,21 @@ while ~isempty(email_contents)
 
     % Tokenize and also get rid of any punctuation
     [str, email_contents] = ...
-       strtok(email_contents, ...
-              [' @$/#.-:&*+=[]?!(){},''">_<;%' char(10) char(13)]);
+        strtok(email_contents, ...
+              [' @$/#.-:&*+=[]?!(){},''">_<;%' newline char(13)]);
    
-    % Remove any non alphanumeric characters
+    % Remove any non alphanumeric(字母数字的) characters
     str = regexprep(str, '[^a-zA-Z0-9]', '');
 
     % Stem the word 
     % (the porterStemmer sometimes has issues, so we use a try catch block)
-    try str = porterStemmer(strtrim(str)); 
-    catch str = ''; continue;
-    end;
+    try 
+        % Porter Stemming algorithm 处理字符串，将其“正规化”
+        str = porterStemmer(strtrim(str));
+    catch
+        str = ''; 
+        continue;
+    end
 
     % Skip the word if it is too short
     if length(str) < 1
@@ -97,15 +104,14 @@ while ~isempty(email_contents)
     %       str2). It will return 1 only if the two strings are equivalent.
     %
     
-    for i=1:length(vocabList)
-        if strcmp(vocabList{i},str)
+    for i = 1 : length(vocabList)
+        if strcmp(vocabList{i}, str)
             word_indices = [word_indices; i];
         end
     end
 
     % =============================================================
-
-
+    
     % Print to screen, ensuring that the output lines are not too long
     if (l + length(str) + 1) > 78
         fprintf('\n');
@@ -113,7 +119,7 @@ while ~isempty(email_contents)
     end
     fprintf('%s ', str);
     l = l + length(str) + 1;
-
+    
 end
 
 % Print footer

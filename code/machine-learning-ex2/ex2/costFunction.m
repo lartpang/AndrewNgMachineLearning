@@ -18,11 +18,11 @@ grad = zeros(size(theta));
 %               derivatives of the cost w.r.t. each parameter in theta
 %
 % Note: grad should have the same dimensions as theta
-%
+% X(1, :) = x'
+% 求转置，可以转前面复杂的，亦可转简单的，但是转简单的更节约资源
 
-J=1/m*(-y' * log(sigmoid(X * theta)) - (1.-y)' * log(1.- sigmoid(X * theta)));
+J = 1 / m * (-y' * log(sigmoid(X * theta)) - (1 - y)' * log(1 - sigmoid(X * theta)));
 grad = 1 / m * (X' * (sigmoid(X * theta) - y));
-
 
 % =============================================================
 

@@ -1,5 +1,4 @@
-function [error_train, error_val] = ...
-    learningCurve(X, y, Xval, yval, lambda)
+function [error_train, error_val] = learningCurve(X, y, Xval, yval, lambda)
 %LEARNINGCURVE Generates the train and cross validation set errors needed 
 %to plot a learning curve
 %   [error_train, error_val] = ...
@@ -53,19 +52,22 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
-% è®¡ç®—ä¸åŒæ ·æœ¬æ•°é‡å¸¦æ¥çš„ä¸åŒè¯¯å·®
-for i = 1:m
+for i = 1 : m
+    fprintf("µ±Ç°Ê¹ÓÃ%d¸öÑù±¾À´ÑµÁ·Êı¾İ\n", i);
     X_temp = X(1:i, :);
-    y_temp = y(1:i);
-    
+    y_temp = y(1:i);    
     theta = trainLinearReg(X_temp, y_temp, lambda);
+    % ÕâÀïµÄÁ½¸öÎó²î¶¼ÊÇÓÃJÀ´²ûÊöÖ¸´úµÄ
+    % ÑµÁ·Îó²î
     error_train(i) = linearRegCostFunction(X_temp, y_temp, theta, 0);
+    % ÓÃÑµÁ·³öÀ´µÄÄ£ĞÍÀ´½øĞĞÑéÖ¤¼ÆËãËğÊ§º¯Êı
+    % ½»²æÑéÖ¤Îó²î
     error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
 end
 
+fprintf("Ñ§Ï°½áÊø");
 
 % -------------------------------------------------------------
-
 % =========================================================================
 
 end

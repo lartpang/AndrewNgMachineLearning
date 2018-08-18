@@ -19,12 +19,18 @@ grad = zeros(size(theta));
 %               You should set J to the cost and grad to the gradient.
 %
 
-J = 1 / (2 * m) * sum((X * theta - y) .^ 2) + lambda / (2 * m) * (sum(theta .^ 2) - theta(1) ^ 2);
+% J = 1 / (2 * m) * sum((X * theta - y) .^ 2) + ...
+%     lambda / (2 * m) * (sum(theta .^ 2) - theta(1) ^ 2);
 
-grad = 1 / m * (X' * (X * theta - y)) + lambda / m * [0; theta(2:end)];
+% 节省运算时间
+z = X * theta - y;
+theta_without0 = theta(2 : end);
+J = 1 / (2 * m) * (z' * z)+ ...
+    lambda / (2 * m) * (theta_without0' * theta_without0);
+
+% 直接使用矩阵运算，以及theta_without0可以得到所有的结果
+grad = 1 / m * (X' * (X * theta - y)) + lambda / m * [0; theta_without0];
 
 % =========================================================================
-
-grad = grad(:);
 
 end

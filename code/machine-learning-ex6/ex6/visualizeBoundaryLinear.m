@@ -6,8 +6,11 @@ function visualizeBoundaryLinear(X, y, model)
 
 w = model.w;
 b = model.b;
-xp = linspace(min(X(:,1)), max(X(:,1)), 100);
-yp = - (w(1)*xp + b)/w(2);
+xp = linspace(min(X(:, 1)), max(X(:, 1)), 100);
+% 注意，实际上决策边界是 0 = b + w(1) * xp  + w(2)* yp => yp == xp2 ; 
+% 可以这样理解么？
+yp = - (w(1) * xp + b) / w(2);
+
 plotData(X, y);
 hold on;
 plot(xp, yp, '-b'); 

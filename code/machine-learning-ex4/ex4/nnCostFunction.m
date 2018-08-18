@@ -16,17 +16,21 @@ function [J grad] = nnCostFunction(nn_params, ...
 
 % Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
 % for our 2 layer neural network
-Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
+
+% ½«nn_paramsµÄÇ°(hidden_layer_size * (input_layer_size + 1))¸ö²ÎÊıÖØĞÂ×éºÏ³ÉÒ»¸ö
+% (hidden_layer_size X (input_layer_size + 1))µÄ¾ØÕó£¬ÕâÀï²»¿ÉÒÔÖ±½ÓÖ¸¶¨£¬
+% ²»È»¶ÔÓÚĞ¡¹æÄ£µÄ¾Í²»ÊÊÓÃÁË
+Theta1 = reshape(nn_params(1 : (hidden_layer_size * (input_layer_size + 1))), ...
                  hidden_layer_size, (input_layer_size + 1));
 
-Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
+Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))) : end), ...
                  num_labels, (hidden_layer_size + 1));
 
-% Setup some useful variables
+% Setup some useful variables£¬Ñù±¾ÊıÁ¿
 m = size(X, 1);
          
 % You need to return the following variables correctly 
-J = 0;
+J = 0; % Ç°Ïò´«²¥µÃµ½µÄËğÊ§º¯Êı
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
@@ -63,78 +67,76 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
-% Initialize the y matrix
+%% Initialize the y matrix
+% Êä³öÓÃµÄyNum£¬Ñù±¾ÊıÎªĞĞÊı£¬Àà±ğÎªÁĞÊı
 yNum = zeros(m, num_labels);
-for i = 1:m
+for i = 1 : m
   yNum(i, y(i)) = 1;
 end
 
+%% Ç°Ïò´«²¥
 % Begin training
 a1 = X;
 
-% 5000 x 25
-z2 = (Theta1 * [ones(m, 1) a1]')';
+% theta ±¾ÊÇ (ÏÂÒ»²ãµ¥ÔªÊıX(ÉÏÒ»²ãµ¥ÔªÊı+1)) ¹æÄ£µÄ
+z2 = [ones(m, 1), a1] * Theta1';
 a2 = sigmoid(z2);
+% Êä³ö5000*25
 
-% 5000 x 10
-z3 = (Theta2 * [ones(m, 1) a2]')';
+z3 = [ones(m, 1), a2] * Theta2';
 a3 = sigmoid(z3);
+% Êä³ö5000*10
 
-for i = 1:m
-  J = J + (-yNum(i, :) * log(a3(i, :))' - (1.- yNum(i, :)) * log(1.- a3(i, :))');
-end
+% for i = 1 : m
+%   J = J + (-yNum(i, :) * log(a3(i, :))' - (1 - yNum(i, :)) * log(1 - a3(i, :))');
+% end
+% J = J / m;
 
-J = J / m
+% yNumµÄÒ»ĞĞ´ú±í¸ÃÑù±¾ÏÂµÄÊµ¼Ê·ÖÀàÇé¿ö
+% a3µÄÒ»ĞĞ´ú±í¸ÃÑù±¾ÏÂµÄÔ¤²âÇé¿ö
+% ËùÒÔyNumÓëa3µÄĞĞÓĞÃ÷ÏÔµÄ¶ÔÓ¦¹ØÏµ£¬²»¿ÉÒÔÖ±½Ó¾ØÕóÏà³Ë£¬»áµ¼ÖÂĞĞÖ®¼äÓĞ´íÂÒ£¬
+% ÕıÈ·µÄ½á¹ûÓ¦¸ÃÊÇ¶Ô¾ØÕó½á¹ûÇó¼£
+J_pre = trace(-yNum * log(a3)' - (1 - yNum) * log(1 - a3)');
+J = J_pre / m;
 
-% Regularization, except for the 1st item (bias unit)
+% Regularization, except for the 1st item (bias unit)£¬ÕıÔò»¯²»¿¼ÂÇÆ«²îµ¥Ôª
 
-t1 = Theta1(:, 2:end);
-t2 = Theta2(:, 2:end);
+t1 = Theta1(:, 2 : end);
+t2 = Theta2(:, 2 : end);
 
+% ÕâÀïµÄÕıÔò»¯²¿·Ö£¬Êµ¼ÊÉÏÖ±½Ó¶ÔËùÓĞµÄĞèÇóµÄtheta½øĞĞÇóºÍ¼´¿É£¬
+% ×¢ÒâÕâÀïµÄTheta1&2¶¼ÒÑ¾­ÊÇ·ûºÏÊµ¼ÊÊı¾İµÄthetaÖµÁË£¬¼û¿ªÍ·
 regularization = lambda / (2 * m) * (sum(sum(t1 .^ 2)) + sum(sum(t2 .^ 2)));
 
 J = J + regularization;
 
-% backpropagation
+%%  backpropagation ºóÏò´«²¥
 
-% 5000 x 10
-
-d3 = a3-yNum;
-
-% 5000 x 25
-d2 = (d3 * Theta2(:, 2:end)) .* sigmoidGradient(z2);
+% theta Ã¿Ò»ĞĞ±íÊ¾ÕâÒ»²ãËùÓĞµ¥Ôª¶ÔÓÚÏÂÒ»²ãÄ³Ò»µ¥ÔªµÄ×÷ÓÃÈ¨ÖØ
+% a3µÄÒ»ĞĞ´ú±í¸ÃÑù±¾ÏÂµÄÔ¤²âÇé¿ö£¬ËùÒÔd3µÄÒ»ĞĞ±íÊ¾¸ÃÑù±¾ÏÂµÄÎó²îÇé¿ö
+delta_3 = a3 - yNum;
+% Êä³ö5000 x 10
+delta_2 = (delta_3 * Theta2(:, 2 : end)) .* sigmoidGradient(z2);
+% Êä³ö5000 x 25
 
 % 10 x 26 Theta2_grad
-
-% è¿™é‡Œä¸ºä»€ä¹ˆè¦ä½œè¿™æ ·çš„å¤„ç†ï¼Ÿæ„Ÿè§‰ä¸å…¬å¼å¹¶ä¸ç¬¦åˆï¼Œä½†ç»“æœæ˜¯å¯¹çš„
-a2_with_a0 = [ones(m, 1) a2];
-
-D2 = d3' * a2_with_a0;
-
-Theta2_grad = D2 / m;
-
-regularization = lambda / m * [zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
-
+a2_with_a2_0 = [ones(m, 1), a2];
+Theta2_grad = delta_3' * a2_with_a2_0 / m;
+regularization = lambda / m * [zeros(size(Theta2, 1), 1), Theta2(:, 2:end)];
 Theta2_grad = Theta2_grad + regularization;
 
 % 25 x 401 Theta1_grad
-
-a1_with_a0 = [ones(m, 1) a1];
-
-D1 = d2' * a1_with_a0;
-
-Theta1_grad = D1 / m;
-
-regularization = lambda / m * [zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
-
+a1_with_a1_0 = [ones(m, 1), a1];
+Theta1_grad = delta_2' * a1_with_a1_0 / m;
+regularization = lambda / m * [zeros(size(Theta1, 1), 1), Theta1(:, 2:end)];
 Theta1_grad = Theta1_grad + regularization;
 
 % -------------------------------------------------------------
 
 % =========================================================================
 
-% Unroll gradients
-grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
+% Unroll gradients£¬´®Áª¾ØÕó£¬µÃµ½µÄ½á¹ûÊÇÒ»¸öÁĞÏòÁ¿
+grad = [Theta1_grad(:); 
+        Theta2_grad(:)];
 
 end

@@ -15,7 +15,7 @@ n = size(X, 2);
 all_theta = zeros(num_labels, n + 1);
 
 % Add ones to the X data matrix
-X = [ones(m, 1) X];
+X = [ones(m, 1), X];
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the following code to train num_labels
@@ -49,18 +49,22 @@ X = [ones(m, 1) X];
 %                 initial_theta, options);
 %
 
-for i = 1:num_labels
+iter_nums = 50;
+
+for i = 1 : num_labels
+    fprintf('当前迭代标签y=%d, 迭代次数预设%d次 \n', i, iter_nums);
     % Initialize thetas
     initial_theta = zeros(n + 1, 1);
     % option for fmincg
-    options = optimset('GradObj', 'on', 'MaxIter', 50);     
+    options = optimset('GradObj', 'on', 'MaxIter', iter_nums);     
     % Use lrCostFunction to calculate cost function and gradient each time
     % fmincg works similarly to fminunc, but is more more efficient for dealing with a large number of parameters.
-    all_theta(i,:) = fmincg (@(t)(lrCostFunction(t, X, (y == i), lambda)), initial_theta, options);
+    % fmincg 以y==i为正类，其余为负类进行分类优化
+    all_theta(i, :) = fmincg (@(t)(lrCostFunction(t, X, (y == i), lambda)), initial_theta, options);
 end
 
+fprintf('训练完成\n');
 
 % =========================================================================
-
 
 end

@@ -1,7 +1,7 @@
-function p = predictOneVsAll(all_theta, X)
+function pro_classes = predictOneVsAll(all_theta, X)
 %PREDICT Predict the label for a trained one-vs-all classifier. The labels 
 %are in the range 1..K, where K = size(all_theta, 1). 
-%  p = PREDICTONEVSALL(all_theta, X) will return a vector of predictions
+%  pro_classes = PREDICTONEVSALL(all_theta, X) will return a vector of predictions
 %  for each example in the matrix X. Note that X contains the examples in
 %  rows. all_theta is a matrix where the i-th row is a trained logistic
 %  regression theta vector for the i-th class. You should set p to a vector
@@ -12,10 +12,10 @@ m = size(X, 1);
 num_labels = size(all_theta, 1);
 
 % You need to return the following variables correctly 
-p = zeros(size(X, 1), 1);
+pro_classes = zeros(size(X, 1), 1);
 
 % Add ones to the X data matrix
-X = [ones(m, 1) X];
+X = [ones(m, 1), X];
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Complete the following code to make predictions using
@@ -30,14 +30,13 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
-
-% x * all_theta' : 5000 * 10ï¼Œæ¯ä¸€è¡Œçš„æ¯ä¸€ä¸ªåˆ—å€¼ä»£è¡¨å›¾åƒæ˜¯1,2...10çš„å¯èƒ½æ€§
-% use max(),M = max(A,[],dim) æ²¿ç€ç»´åº¦ dim è¿”å›æœ€å¤§å…ƒç´ ã€‚ä¾‹å¦‚ï¼Œå¦‚æœ A ä¸ºçŸ©é˜µï¼Œåˆ™ max(A,[],2) æ˜¯åŒ…å«æ¯ä¸€è¡Œçš„æœ€å¤§å€¼çš„åˆ—å‘é‡ã€‚
-% probaitiltyä»£è¡¨æ¯ä¸€è¡Œæœ€å¤§çš„å€¼ï¼Œpä»£è¡¨ç´¢å¼•
-[probability, p] = max(sigmoid(X * all_theta'), [], 2);
-
+% x * all_theta' : 5000 * 10
+% all_theta Õâ¸öÁ¿£¬Ò»ĞĞ´ú±íÒ»ÀàµÄÑµÁ·³öÀ´µÄÌØÕ÷ÏòÁ¿ËùÒÔ£¬Ê¹ÓÃÊ±Òª×¢Òâ×ªÖÃ
+% sigmoid(X * all_theta') ¼ÆËã½á¹ûÊÇ¾ØÕó£¬Ã¿Ò»¸öĞĞÖµÊÇÃ¿¸öÑù±¾¶àÖÖ·ÖÀàÇé¿öÏÂµÄÔ¤²âÖµ£¬Ã¿Ò»ÁĞ¶ÔÓ¦Ò»ÖÖ·ÖÀà
+% [value, index] =max(A, [], 2)£¬ÑØ×ÅÎ¬¶È dim ·µ»Ø×î´óÔªËØ¡£ÀıÈç£¬Èç¹û A Îª¾ØÕó£¬Ôò max(A,[],2)
+% ÊÇ°üº¬Ã¿Ò»ĞĞµÄ×î´óÖµµÄÁĞÏòÁ¿¡£dim=1Ê±£¬Ôò·µ»ØÃ¿Ò»ÁĞµÄ×î´óÖµ¡£ËùÒÔÕâÀïmax·µ»ØµÄÊÇÖµºÍË÷Òı£¨¼´Ô¤²â·ÖÀà£©µÄ×éºÏ¡£
+[value, pro_classes] = max(sigmoid(X * all_theta'), [], 2);
 
 % =========================================================================
-
 
 end

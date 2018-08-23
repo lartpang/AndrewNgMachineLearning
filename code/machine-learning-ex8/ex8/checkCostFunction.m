@@ -6,6 +6,7 @@ function checkCostFunction(lambda)
 %   analytical gradients produced by your code and the numerical gradients 
 %   (computed using computeNumericalGradient). These two gradient 
 %   computations should result in very similar values.
+% 用随机的数据来求出对应的数值梯度和求导的梯度，进而进行比较
 
 % Set lambda
 if ~exist('lambda', 'var') || isempty(lambda)
@@ -29,11 +30,13 @@ num_users = size(Y, 2);
 num_movies = size(Y, 1);
 num_features = size(Theta_t, 2);
 
+% 对于现有的[X(:); Theta(:)]进行各项上微调，所有的电影特征元素和用户参数元素
+% 求出微调后的数值梯度汇总的向量，和各电影各用户相对应
 numgrad = computeNumericalGradient( ...
                 @(t) cofiCostFunc(t, Y, R, num_users, num_movies, ...
                                 num_features, lambda), [X(:); Theta(:)]);
 
-[cost, grad] = cofiCostFunc([X(:); Theta(:)],  Y, R, num_users, ...
+[~, grad] = cofiCostFunc([X(:); Theta(:)],  Y, R, num_users, ...
                           num_movies, num_features, lambda);
 
 disp([numgrad grad]);

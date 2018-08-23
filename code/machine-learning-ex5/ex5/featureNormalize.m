@@ -12,7 +12,9 @@ function [X_norm, mu, sigma] = featureNormalize(X)
 % X_norm = bsxfun(@rdivide, X_norm, sigma);
 
 mu = mean(X);
+% mu表示各特征的均值
 sigma = std(X);
+% sigma表示各特征的标准差
 X_norm = (X - mu) ./ sigma;
 % 高版本matlab建议直接使用运算符即可
 % 注意，是 ./

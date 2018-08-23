@@ -11,14 +11,18 @@ function numgrad = computeNumericalGradient(J, theta)
 %        i-th input argument, evaluated at theta. (i.e., numgrad(i) should 
 %        be the (approximately) the partial derivative of J with respect 
 %        to theta(i).)
-%                
+% 对于现有的[X(:); Theta(:)]进行各项上微调，所有的电影特征向量和用户参数向量
+% 求出微调后的数值梯度
+% 传入的@(t) cofiCostFunc(t, Y, R, num_users, num_movies, num_features, lambda)
 
 numgrad = zeros(size(theta));
 perturb = zeros(size(theta));
 e = 1e-4;
-for p = 1:numel(theta)
+for p = 1 : numel(theta)
+    % 数组元素的数目
     % Set perturbation vector
     perturb(p) = e;
+% 相当于是 cofiCostFunc(theta +- perturb, Y, R, num_users, num_movies, num_features, lambda)
     loss1 = J(theta - perturb);
     loss2 = J(theta + perturb);
     % Compute Numerical Gradient

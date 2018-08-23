@@ -1,4 +1,4 @@
-function [bestEpsilon bestF1] = selectThreshold(yval, pval)
+function [bestEpsilon, bestF1] = selectThreshold(yval, pval)
 %SELECTTHRESHOLD Find the best threshold (epsilon) to use for selecting
 %outliers
 %   [bestEpsilon bestF1] = SELECTTHRESHOLD(yval, pval) finds the best
@@ -10,8 +10,9 @@ bestEpsilon = 0;
 bestF1 = 0;
 F1 = 0;
 
+% 因为要求取的 epsilon 是要大于pmin且小于pmax，这样才有检测价值
 stepsize = (max(pval) - min(pval)) / 1000;
-for epsilon = min(pval):stepsize:max(pval)
+for epsilon = min(pval) : stepsize : max(pval)
     
     % ====================== YOUR CODE HERE ======================
     % Instructions: Compute the F1 score of choosing epsilon as the
@@ -23,19 +24,20 @@ for epsilon = min(pval):stepsize:max(pval)
     % Note: You can use predictions = (pval < epsilon) to get a binary vector
     %       of 0's and 1's of the outlier predictions
 
-
-    cv_predictions = (pval < epsilon);
+    % 用逻辑向量的形式来表述预测结果
+    cv_predictions  = (pval < epsilon);
+    % 只用到了下面的三个量
     true_positives  = sum(cv_predictions == 1 & yval == 1);
     false_positives = sum(cv_predictions == 1 & yval == 0);
     false_negatives = sum(cv_predictions == 0 & yval == 1);
+    % 计算F1值
     precision = true_positives / (true_positives + false_positives);
     recall    = true_positives / (true_positives + false_negatives);
     F1 = 2 * precision * recall / (precision + recall);
 
-
-
     % =============================================================
 
+    % F1越大越好
     if F1 > bestF1
        bestF1 = F1;
        bestEpsilon = epsilon;

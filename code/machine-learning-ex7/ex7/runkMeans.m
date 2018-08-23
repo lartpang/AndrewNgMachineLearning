@@ -1,5 +1,4 @@
-function [centroids, idx] = runkMeans(X, initial_centroids, ...
-                                      max_iters, plot_progress)
+function [centroids, idx] = runkMeans(X, initial_centroids, max_iters, plot_progress)
 %RUNKMEANS runs the K-Means algorithm on data matrix X, where each row of X
 %is a single example
 %   [centroids, idx] = RUNKMEANS(X, initial_centroids, max_iters, ...
@@ -11,7 +10,8 @@ function [centroids, idx] = runkMeans(X, initial_centroids, ...
 %   learning happens. This is set to false by default. runkMeans returns 
 %   centroids, a Kxn matrix of the computed centroids and idx, a m x 1 
 %   vector of centroid assignments (i.e. each entry in range [1..K])
-%
+% 
+% [centroids, idx] = runkMeans(X, initial_centroids, max_iters, true);
 
 % Set default value for plot progress
 if ~exist('plot_progress', 'var') || isempty(plot_progress)
@@ -25,14 +25,14 @@ if plot_progress
 end
 
 % Initialize values
-[m n] = size(X);
+[m, n] = size(X);
 K = size(initial_centroids, 1);
 centroids = initial_centroids;
 previous_centroids = centroids;
-idx = zeros(m, 1);
+idx = zeros(m, 1); % 各样本对应的中心点的索引存放
 
 % Run K-Means
-for i=1:max_iters
+for i = 1 : max_iters
     
     % Output progress
     fprintf('K-Means iteration %d/%d...\n', i, max_iters);
@@ -42,12 +42,14 @@ for i=1:max_iters
     
     % For each example in X, assign it to the closest centroid
     idx = findClosestCentroids(X, centroids);
+    % idx存放最近的中心索引
     
     % Optionally, plot progress here
+    % 通过绘制每一步的变化情况，来显示最终的K-M的学习过程
     if plot_progress
         plotProgresskMeans(X, centroids, previous_centroids, idx, K, i);
         previous_centroids = centroids;
-        fprintf('Press enter to continue.\n');
+        fprintf('Press enter in console to continue.\n');
         pause;
     end
     

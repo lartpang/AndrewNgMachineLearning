@@ -5,13 +5,17 @@ function [Ynorm, Ymean] = normalizeRatings(Y, R)
 %   has a rating of 0 on average, and returns the mean rating in Ymean.
 %
 
-[m, n] = size(Y);
+[m, ~] = size(Y);
 Ymean = zeros(m, 1);
 Ynorm = zeros(size(Y));
-for i = 1:m
-    idx = find(R(i, :) == 1);
-    Ymean(i) = mean(Y(i, idx));
-    Ynorm(i, idx) = Y(i, idx) - Ymean(i);
-end
+% for i = 1 : m
+%     idx = R(i, :) == 1;
+%     Ymean(i) = mean(Y(i, idx));
+%     Ynorm(i, idx) = Y(i, idx) - Ymean(i);
+% end
+
+Y = R .* Y;
+Ymean = mean(Y, 2);
+Ynorm = Y - Ymean;
 
 end

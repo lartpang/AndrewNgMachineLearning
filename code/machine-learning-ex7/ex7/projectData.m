@@ -4,7 +4,7 @@ function Z = projectData(X, U, K)
 %   Z = projectData(X, U, K) computes the projection of 
 %   the normalized inputs X into the reduced dimensional space spanned by
 %   the first K columns of U. It returns the projected examples in Z.
-%
+% 返回投影后得到的新的特征下的样本
 
 % You need to return the following variables correctly.
 Z = zeros(size(X, 1), K);
@@ -18,8 +18,10 @@ Z = zeros(size(X, 1), K);
 %                    projection_k = x' * U(:, k);
 %
 
-U_reduce = U(:, 1:K);
-Z = X * U_reduce
+% 取U的前K列
+U_reduce = U(:, 1 : K);
+% = 50x2 * 2x1
+Z = X * U_reduce;
 
 % =============================================================
 

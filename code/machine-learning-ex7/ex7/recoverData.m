@@ -4,7 +4,7 @@ function X_rec = recoverData(Z, U, K)
 %   X_rec = RECOVERDATA(Z, U, K) recovers an approximation the 
 %   original data that has been reduced to K dimensions. It returns the
 %   approximate reconstruction in X_rec.
-%
+% 返回从新特征重新映射回去得到的近似的旧特征矩阵 mxn
 
 % You need to return the following variables correctly.
 X_rec = zeros(size(Z, 1), size(U, 1));
@@ -21,7 +21,8 @@ X_rec = zeros(size(Z, 1), size(U, 1));
 %               Notice that U(j, 1:K) is a row vector.
 %               
 
-U_reduce = U(:, 1:K);
+U_reduce = U(:, 1 : K);
+% 50x2 = 50x1 * (2x1)'
 X_rec = Z * U_reduce';
 
 % =============================================================
